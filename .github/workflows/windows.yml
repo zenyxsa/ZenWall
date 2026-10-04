@@ -1,0 +1,58 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.10.3
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtmultimedia
+          cache: true
+
+      - name: Configure
+        shell: pwsh
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release --parallel
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Copy-Item build/zenwall.exe dist/zenwall.exe
+
+          windeployqt `
+            --release `
+            --qmldir src `
+            --no-translations `
+            --dir dist `
+            dist/zenwall.exe
+
+          Compress-Archive `
+            -Path dist/* `
+            -DestinationPath ZenWall-windows-x64.zip `
+            -Force
+
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZenWall-windows-x64
+          path: ZenWall-windows-x64.zip
+          if-no-files-found: error
