@@ -1,77 +1,66 @@
 # ZenWall
 
-A cross-platform wallpaper switcher built with **Qt 6, QML, C++, CMake, and Ninja**.
+**ZenWall** is a cross-platform wallpaper switcher built with **Qt 6, QML, C++17, CMake, and Ninja**.
 
-ZenWall is designed as a fullscreen transparent wallpaper selector with a compact **Skew-inspired interface**, allowing you to browse, filter, favorite, search, and apply wallpapers without using a traditional dashboard-style window.
+It uses a fullscreen transparent overlay with a compact **Skew-inspired wallpaper selector** instead of a traditional dashboard-style application window.
+
+[![Windows Build](https://github.com/zenyxsa/ZenWall/actions/workflows/windows.yml/badge.svg)](https://github.com/zenyxsa/ZenWall/actions/workflows/windows.yml)
 
 ## Features
 
-* Fullscreen transparent wallpaper selector
-* Skew-style wallpaper cards
-* Image previews
-* Video previews
-* Mouse navigation
-* Keyboard navigation
-* Favorites
-* Search
-* Media type filters
-* Sort wallpapers
-* Random wallpaper selection
-* Automatic wallpaper rotation
-* Color filtering
-* Monitor/output selection
-* Wallpaper transitions on Linux
-* Automatic wallpaper count
-* Cross-platform Qt/QML interface
+- Fullscreen transparent wallpaper selector
+- Skew-style wallpaper cards
+- Image previews
+- Video previews
+- Mouse and keyboard navigation
+- Favorites
+- Search
+- Media type filters
+- Sorting
+- Random wallpaper selection
+- Automatic wallpaper rotation
+- Color filtering
+- Monitor/output selection
+- Wallpaper transitions on Linux
+- Wallpaper count
+- Cross-platform Qt/QML interface
 
-## Supported Platforms
+## Platform Support
 
-### Linux
+| Platform | Wallpaper Backend | Status |
+| --- | --- | --- |
+| Linux / Wayland | [awww](https://github.com/amenra/awww) | Working |
+| Windows 10 / 11 | Windows Desktop Wallpaper API | Working |
 
-ZenWall uses **awww** as its Linux wallpaper backend.
+> ZenWall is still under active development. Some advanced media and desktop-wallpaper features are not finished yet.
 
-Currently supported:
+---
 
-* Image wallpapers
-* Per-monitor wallpaper selection
-* Wallpaper transitions
-* Random wallpapers
-* Favorites
-* Wallpaper rotation
-* Wayland environments
+## Linux
 
-### Windows
+ZenWall uses **awww** for applying wallpapers on Linux.
 
-ZenWall uses the native **Windows Desktop Wallpaper API**.
+### Requirements
 
-Currently supported:
+- Linux with a Wayland session
+- Qt 6
+- C++17 compiler
+- CMake
+- Ninja
+- awww
+- awww-daemon
 
-* Image wallpapers
-* Monitor detection
-* Individual monitor selection
-* Multiple-monitor wallpaper handling
-* Native Windows wallpaper management
+### Arch Linux dependencies
 
-## Linux Requirements
-
-* Qt 6
-* C++17 compiler
-* CMake
-* Ninja
-* awww
-* awww-daemon
-
-### Arch Linux
-
-Install the Qt/build dependencies:
+Install the Qt and build dependencies:
 
 ```fish
 sudo pacman -S --needed cmake ninja qt6-base qt6-declarative qt6-multimedia
 ```
 
-Install `awww` separately if it is not already installed.
+Install **awww** separately if it is not already installed.
 
-## Build on Linux
+### Build
 
 Clone the repository:
 
@@ -80,7 +69,7 @@ git clone https://github.com/zenyxsa/ZenWall.git
 cd ZenWall
 ```
 
-Configure:
+Configure the project:
 
 ```fish
 cmake -S . -B build -G Ninja
@@ -98,29 +87,37 @@ Run:
 ./build/zenwall
 ```
 
-Check the awww daemon:
+### Check awww
+
+Check the current outputs:
 
 ```fish
 awww query
 ```
 
-If the daemon is not running:
+Start the daemon when needed:
 
 ```fish
 awww-daemon &
 ```
 
-## Windows Requirements
+ZenWall can pass the selected display/output to awww for monitor-specific wallpaper changes.
 
-For building ZenWall from source:
+---
 
-* Windows 10 or Windows 11
-* Qt 6
-* Visual Studio 2022
-* CMake
-* Ninja
+## Windows
 
-## Build on Windows
+ZenWall uses the native **Windows Desktop Wallpaper API** through `IDesktopWallpaper`.
+
+### Requirements
+
+- Windows 10 or Windows 11
+- Qt 6
+- Visual Studio 2022 with C++ desktop development tools
+- CMake
+- Ninja
+
+### Build
 
 Clone the repository:
 
@@ -129,132 +126,194 @@ git clone https://github.com/zenyxsa/ZenWall.git
 cd ZenWall
 ```
 
-Configure:
+Configure with Visual Studio 2022:
 
 ```powershell
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 ```
 
-Build:
+Build the Release version:
 
 ```powershell
 cmake --build build --config Release
 ```
 
-The executable will be located at:
+The executable will be:
 
 ```text
 build/Release/zenwall.exe
 ```
 
-## Automated Windows Builds
+### Windows features
 
-ZenWall includes a GitHub Actions workflow:
+- Native Windows wallpaper handling
+- Monitor detection
+- Per-monitor wallpaper selection
+- Image wallpapers
+- Fill/crop positioning
+
+---
+
+## GitHub Actions
+
+ZenWall includes an automated Windows build workflow:
 
 ```text
 .github/workflows/windows.yml
 ```
 
-Every push to the `main` branch automatically builds a Windows x64 version.
+The workflow runs on pushes to `main` and can also be started manually.
 
-The workflow:
+It:
 
-1. Installs Qt
-2. Configures CMake
-3. Builds ZenWall
-4. Runs `windeployqt`
-5. Packages the application
-6. Uploads the Windows build as a GitHub Actions artifact
+1. Checks out the repository
+2. Installs Qt 6
+3. Configures CMake with Visual Studio 2022
+4. Builds the Release executable
+5. Runs `windeployqt`
+6. Creates a Windows x64 ZIP package
+7. Uploads the package as a GitHub Actions artifact
 
-The generated package is:
+Generated package:
 
 ```text
 ZenWall-windows-x64.zip
 ```
 
+---
+
 ## Controls
 
-| Key         | Action                   |
-| ----------- | ------------------------ |
-| Left Arrow  | Previous wallpaper       |
-| Right Arrow | Next wallpaper           |
-| Enter       | Apply selected wallpaper |
-| F           | Toggle favorite          |
-| R           | Random wallpaper         |
-| Escape      | Close ZenWall            |
+| Key | Action |
+| --- | --- |
+| **Left Arrow** | Previous wallpaper |
+| **Right Arrow** | Next wallpaper |
+| **Enter** | Apply selected wallpaper |
+| **F** | Toggle favorite |
+| **R** | Random wallpaper |
+| **Escape** | Close ZenWall |
+
+Mouse interaction is also supported through the selector and top bar.
+
+---
 
 ## Top Bar
 
-The top bar provides quick access to:
+The compact top bar provides quick access to:
 
-* All wallpapers
-* Images
-* Videos
-* GIFs
-* Sorting
-* Favorites
-* Random selection
-* Rotation intervals
-* Monitor/output selection
-* Color filters
-* Search
-* Settings
-* Wallpaper count
+- All wallpapers
+- Images
+- Videos
+- GIFs
+- Sorting
+- Favorites
+- Random selection
+- Rotation
+- Monitor/output selection
+- Color filters
+- Search
+- Settings
+- Wallpaper count
+
+---
+
+## Wallpaper Management
+
+### Favorites
+
+Favorite wallpapers are stored using Qt settings so they can persist between launches.
+
+### Search
+
+Search filters wallpapers by filename.
+
+### Sorting
+
+Wallpapers can be sorted using the selector's sorting control.
+
+### Random
+
+The random action selects another wallpaper from the currently available collection.
+
+### Rotation
+
+ZenWall supports automatic wallpaper rotation using configurable intervals.
+
+### Color Filtering
+
+ZenWall can use wallpaper color information to provide hue-based filtering.
+
+---
 
 ## Monitor Selection
 
-ZenWall can target a specific display.
+ZenWall supports selecting the display where a wallpaper should be applied.
 
 ### Linux
 
-The selected monitor is passed to `awww` using its output support.
+The selected output is passed to **awww**.
 
 ### Windows
 
-ZenWall detects Windows displays and maps the selected display to the native Windows Desktop Wallpaper API.
+ZenWall detects Windows displays and uses the Windows Desktop Wallpaper API for the selected monitor.
 
-## Wallpaper Rotation
-
-ZenWall supports automatic wallpaper rotation.
-
-Available rotation intervals include:
-
-* 5 minutes
-* 15 minutes
-* 30 minutes
-* 1 hour
-
-## Favorites
-
-Favorite wallpapers are stored using Qt settings so that the selection persists between launches.
-
-## Search
-
-The search control allows wallpapers to be filtered by filename.
-
-## Color Filtering
-
-ZenWall can analyze wallpaper colors and provide hue-based filtering.
-
-This allows you to quickly find wallpapers with similar color characteristics.
+---
 
 ## Media Support
 
 ### Images
 
-Images are the primary supported desktop wallpaper type on both platforms.
+Images are the main desktop wallpaper format supported by ZenWall.
 
 ### GIF
 
-GIF files can be detected and previewed by ZenWall.
+GIF files can be detected and previewed by the application.
 
-Actual desktop GIF support depends on the wallpaper backend being used.
+Desktop GIF handling depends on the capabilities of the selected wallpaper backend.
 
 ### Video
 
-Video files can be previewed inside the ZenWall selector using **Qt Multimedia**.
+Video files can be previewed inside ZenWall using **Qt Multimedia**.
 
-Desktop video wallpaper application is still under development.
+Full desktop video wallpaper support is still under development.
+
+---
+
+## Architecture
+
+ZenWall keeps the user interface cross-platform and isolates platform-specific wallpaper operations inside the C++ backend.
+
+```text
+                    ZenWall
+                       |
+                 Qt / QML UI
+                       |
+              WallpaperBackend
+                 /          \
+                /            \
+             Linux         Windows
+               |               |
+             awww      IDesktopWallpaper
+```
+
+The QML interface is shared between platforms while the backend uses the native wallpaper mechanism for each operating system.
+
+---
+
+## Technology Stack
+
+- **C++17**
+- **Qt 6**
+- **Qt Quick**
+- **QML**
+- **Qt Multimedia**
+- **CMake**
+- **Ninja**
+- **awww** on Linux
+- **Windows Desktop Wallpaper API** on Windows
+- **GitHub Actions** for Windows builds
+
+---
 
 ## Project Structure
 
@@ -276,74 +335,11 @@ ZenWall/
 └── README.md
 ```
 
-## Architecture
-
-ZenWall keeps the interface cross-platform while separating wallpaper operations into a platform-aware C++ backend.
-
-```text
-             ZenWall UI
-                 |
-             Qt / QML
-                 |
-        WallpaperBackend
-           /           \
-        Linux         Windows
-          |              |
-        awww       Windows Desktop
-                   Wallpaper API
-```
-
-This allows the same QML interface to be used on both platforms while each operating system uses its own wallpaper system.
-
-## Technology Stack
-
-* **C++17**
-* **Qt 6**
-* **QML**
-* **Qt Quick**
-* **Qt Multimedia**
-* **CMake**
-* **Ninja**
-* **awww** on Linux
-* **Windows Desktop Wallpaper API** on Windows
-* **GitHub Actions** for automated Windows builds
-
-## Current Status
-
-ZenWall is currently under active development.
-
-### Working
-
-* Linux build
-* Windows build
-* Cross-platform Qt/QML interface
-* Skew wallpaper selector
-* Wallpaper filtering
-* Favorites
-* Search
-* Random selection
-* Rotation
-* Color filtering
-* Monitor selection
-* Linux awww integration
-* Windows native wallpaper integration
-* Automated Windows GitHub Actions build
-
-### Planned
-
-* Background/daemon mode
-* System tray integration
-* Global hotkey
-* Automatic startup
-* Full desktop video wallpaper support
-* Linux packaging
-* Windows installer
-* Additional customization
-* More advanced Skew animations
+---
 
 ## Development
 
-Clean Linux build:
+### Clean Linux build
 
 ```fish
 rm -rf build
@@ -351,24 +347,59 @@ cmake -S . -B build -G Ninja
 cmake --build build
 ```
 
-Clean Windows build:
+### Clean Windows build
 
 ```powershell
 cmake --fresh -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release
 ```
 
+---
+
+## Current Status
+
+### Working
+
+- Cross-platform Qt/QML interface
+- Linux image wallpaper application
+- Windows image wallpaper application
+- Monitor/output selection
+- Wallpaper filtering
+- Favorites
+- Search
+- Random selection
+- Rotation
+- Color filtering
+- Skew-style selector
+- Video previews
+- Linux awww integration
+- Windows native wallpaper integration
+- Automated Windows build and packaging
+
+### Planned
+
+- Background/daemon mode
+- System tray integration
+- Global hotkey
+- Automatic startup
+- Full desktop video wallpaper support
+- Linux packaging
+- Windows installer
+- More customization
+- More advanced animations
+
+---
+
 ## Repository
 
-**GitHub:**
-https://github.com/zenyxsa/ZenWall
+**GitHub:** [github.com/zenyxsa/ZenWall](https://github.com/zenyxsa/ZenWall)
 
 ## License
 
-ZenWall's final license will be added before the first stable release.
+The final project license will be added before the first stable release.
 
 ## Contributing
 
-Bug reports, feature suggestions, testing, and code contributions are welcome.
+Bug reports, feature requests, testing, and code contributions are welcome.
 
-Platform-specific functionality should remain inside the wallpaper backend whenever possible so that the main QML interface stays cross-platform.
+Platform-specific wallpaper logic should stay inside the backend whenever possible so that the main QML interface remains cross-platform.
