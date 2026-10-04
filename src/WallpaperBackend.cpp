@@ -56,7 +56,7 @@ QStringList WallpaperBackend::screenNames() const
         QString name =
             QString::fromWCharArray(device.DeviceName).trimmed();
 
-        if (name.startsWith("\\.\"))
+        if (name.startsWith("\\\\.\\"))
             name = name.mid(4);
 
         if (!name.isEmpty())
@@ -197,8 +197,8 @@ bool WallpaperBackend::applyToOutput(
 
         QString nativeOutput = output.trimmed();
 
-        if (!nativeOutput.startsWith("\\.\"))
-            nativeOutput = "\\.\" + nativeOutput;
+        if (!nativeOutput.startsWith("\\\\.\\"))
+            nativeOutput = "\\\\.\\" + nativeOutput;
 
         struct DisplayLookup {
             std::wstring requested;
